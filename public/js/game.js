@@ -5,6 +5,7 @@ const answer = document.getElementById("answer");
 const result = document.getElementById("result");
 const level = document.getElementById("level");
 const timer = document.getElementById("timer");
+const recent = document.getElementById("recent");
 
 const correctBar = document.getElementById("correctBar");
 const incorrectBar = document.getElementById("incorrectBar");
@@ -116,3 +117,7 @@ function handle(e) {
     }
   }
 }
+
+socket.on("getRecentActivity",(data)=>{
+    recent.innerHTML = data;
+});

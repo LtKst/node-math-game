@@ -26,18 +26,36 @@ io.on('connection', (socket) => {
 
     let score = {
       name: dataArray[0],
-      score: dataArray[dataArray.length - 1]
+      score: dataArray[dataArray.length - 1],
+      time: new Date().toLocaleString()
     };
 
     let jsonData = JSON.stringify(score, null, 2);
 
-    fs.appendFile("score-list.json", "\n" + jsonData , function (err) {
+    fs.appendFile("score-list.json", "-\n" + jsonData , function (err) {
        if (err) throw err;
        console.log('Score added!');
     });
   });
 
   sockets.push(socket);
+
+  fs.readFile('score-list.json', (err, data) => {
+      if (err) throw err;
+
+      var strLines = String(data).split("-");
+      //console.log(strLines[0]);
+
+      let newData = "Recent scores<hr/>";
+
+      for (let i = 0; i < strLines.length; i++)
+      {
+        let score = JSON.parse(strLines[i].replace('-', ''));
+        newData += score.time + " - " + score.name + ": " + score.score + "<br/>";
+      }
+
+      socket.emit("getRecentActivity", newData);
+  });
 });
 
 server.listen(port, () => {
